@@ -1,0 +1,3 @@
+*.pyc
+*.elasticbeanstalk/
+__pycache_/
