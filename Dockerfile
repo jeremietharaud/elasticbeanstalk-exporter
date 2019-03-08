@@ -1,9 +1,11 @@
 FROM python:alpine3.8
 
-WORKDIR /usr/src/app
+WORKDIR /elasticbeanstalk-exporter
+
+RUN pip install --no-cache-dir boto3 prometheus_client
 
 COPY . .
 
-RUN pip install --no-cache-dir boto3 prometheus_client
+EXPOSE 9552
 
 CMD ["python","-u","main.py"]

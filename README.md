@@ -16,7 +16,7 @@ Credentials to AWS are provided in the following order:
 
 For more information see the [AWS Python SDK Documentation](https://boto3.amazonaws.com/v1/documentation/api/latest/guide/quickstart.html#configuration)
 
-To gather additional metrics about resources of your environment, AWS Elastic Beanstalk Enhanced Health Reporting needs to be enabled [following AWS documentation](https://docs.aws.amazon.com/elasticbeanstalk/latest/dg/health-enhanced-enable.html)
+To gather additional metrics about resources of your environment, AWS Elastic Beanstalk Enhanced Health Reporting needs to be enabled, see the [AWS Elastic Beanstalk documentation](https://docs.aws.amazon.com/elasticbeanstalk/latest/dg/health-enhanced-enable.html)
 
 ### AWS IAM permissions
 
