@@ -46,7 +46,7 @@ The exporter needs read access to Elastic Beanstalk service for describing appli
 **You need to specify the region you to connect to**
 
 Running on an ec2 machine using IAM roles:
-`docker run -e AWS_REGION=<region> -d -p 9199:9199 jeremietharaud/elasticbeanstalk-exporter`
+`docker run -e AWS_DEFAULT_REGION=<region> -d -p 9552:9552 jeremietharaud/elasticbeanstalk-exporter`
 
 Or running it externally:
-`docker run -d -p 9199:9199 -e AWS_ACCESS_KEY_ID=<access_key> -e AWS_SECRET_ACCESS_KEY=<secret_key> -e AWS_REGION=<region>  jeremietharaud/elasticbeanstalk-exporter`
+`docker run -d -p 9552:9552 -e AWS_ACCESS_KEY_ID=<access_key> -e AWS_SECRET_ACCESS_KEY=<secret_key> -e AWS_DEFAULT_REGION=<region>  jeremietharaud/elasticbeanstalk-exporter`
