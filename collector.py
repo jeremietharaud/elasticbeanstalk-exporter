@@ -2,6 +2,7 @@ import boto3
 from prometheus_client.core import GaugeMetricFamily
 import logging
 
+
 class Logger:
     """Class used to display logs on the console.
     """
@@ -14,6 +15,7 @@ class Logger:
         stream_handler.setFormatter(formatter)
         logger.addHandler(stream_handler)
         self.logger = logger
+
 
 class ElasticBeanstalkCollector:
     """Class used to get metrics from an Elastic Beanstalk application.

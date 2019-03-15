@@ -1,3 +1,4 @@
 *.pyc
 *.elasticbeanstalk/
+.vscode/
 __pycache_/
