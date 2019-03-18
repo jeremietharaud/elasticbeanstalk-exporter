@@ -4,7 +4,10 @@ A Prometheus Elastic Beanstalk exporter written in Python.
 
 ## Metrics
 
-TODO
+| Metrics  | Dimensions | Labels | Description |
+| ------  | ------ | ------ | ----------- |
+| elasticbeanstalk\_application | application_name | description | Status of Elastic Beanstalk applications |
+| elasticbeanstalk\_environment | environment_name | id, application_name, platform, url, health, version, environment_tier | Status of Elastic Beanstalk environments |
 
 ## Configuration
 
@@ -41,12 +44,18 @@ The exporter needs read access to Elastic Beanstalk service for describing appli
 }
 ```
 
-## Running
+## Docker Image
 
-**You need to specify the region you to connect to**
+To run the Elastic Beanstalk exporter on Docker, you need to specify the region to connect to. Metrics are exposed on port 9552.
 
-Running on an ec2 machine using IAM roles:
-`docker run -e AWS_DEFAULT_REGION=<region> -d -p 9552:9552 jeremietharaud/elasticbeanstalk-exporter`
+When running on an ec2 machine using IAM role:
 
-Or running it externally:
-`docker run -d -p 9552:9552 -e AWS_ACCESS_KEY_ID=<access_key> -e AWS_SECRET_ACCESS_KEY=<secret_key> -e AWS_DEFAULT_REGION=<region>  jeremietharaud/elasticbeanstalk-exporter`
+```
+$ docker run -e AWS_REGION=<region> -d -p 9552:9552 jeremietharaud/elasticbeanstalk-exporter
+```
+
+When running it externally:
+
+```
+$ docker run -d -p 9552:9552 -e AWS_ACCESS_KEY_ID=<access_key> -e AWS_SECRET_ACCESS_KEY=<secret_key> -e AWS_REGION=<region>  jeremietharaud/elasticbeanstalk-exporter
+```

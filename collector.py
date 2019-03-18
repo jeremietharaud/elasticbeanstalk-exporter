@@ -2,6 +2,7 @@ import boto3
 from prometheus_client.core import GaugeMetricFamily
 import logging
 
+
 class Logger:
     """Class used to display logs on the console.
     """
@@ -14,6 +15,7 @@ class Logger:
         stream_handler.setFormatter(formatter)
         logger.addHandler(stream_handler)
         self.logger = logger
+
 
 class ElasticBeanstalkCollector:
     """Class used to get metrics from an Elastic Beanstalk application.
@@ -74,14 +76,14 @@ class ElasticBeanstalkCollector:
                 [environment['EnvironmentName'], environment['EnvironmentId'],
                  environment['ApplicationName'], environment['PlatformArn'],
                  environment['CNAME'], environment['Health'],
-                 get_label_value(environment, 'VersionLabel'),
+                 self.get_label_value(environment, 'VersionLabel'),
                  environment['Tier']['Name']], 1
             )
         yield env
 
-
-def get_label_value(obj, label):
-    if label in obj:
-        return obj[label]
-    else:
-        return ''
+    @staticmethod
+    def get_label_value(obj, label):
+        if label in obj:
+            return obj[label]
+        else:
+            return ''
