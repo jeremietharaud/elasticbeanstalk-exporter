@@ -76,14 +76,14 @@ class ElasticBeanstalkCollector:
                 [environment['EnvironmentName'], environment['EnvironmentId'],
                  environment['ApplicationName'], environment['PlatformArn'],
                  environment['CNAME'], environment['Health'],
-                 get_label_value(environment, 'VersionLabel'),
+                 self.get_label_value(environment, 'VersionLabel'),
                  environment['Tier']['Name']], 1
             )
         yield env
 
-
-def get_label_value(obj, label):
-    if label in obj:
-        return obj[label]
-    else:
-        return ''
+    @staticmethod
+    def get_label_value(obj, label):
+        if label in obj:
+            return obj[label]
+        else:
+            return ''
