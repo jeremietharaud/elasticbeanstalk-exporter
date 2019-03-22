@@ -6,8 +6,8 @@ A Prometheus Elastic Beanstalk exporter written in Python.
 
 | Metrics  | Dimensions | Labels | Description |
 | ------  | ------ | ------ | ----------- |
-| elasticbeanstalk\_application | application_name | description | Status of Elastic Beanstalk applications |
-| elasticbeanstalk\_environment | environment_name | id, application_name, platform, url, health, version, environment_tier | Status of Elastic Beanstalk environments |
+| elasticbeanstalk\_application | application_name | description | Description of Elastic Beanstalk applications |
+| elasticbeanstalk\_environment_status | environment_name | id, application_name, platform, url, health, version, environment_tier | Status of Elastic Beanstalk environments |
 
 ## Configuration
 
