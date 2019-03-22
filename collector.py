@@ -57,11 +57,11 @@ class ElasticBeanstalkCollector:
         applications = self.describe_applications()
         app = GaugeMetricFamily(
             self.metric_prefix + 'application',
-            'Status of Elastic Beanstalk application',
+            'Description of Elastic Beanstalk application',
             labels=['application_name', 'description']
         )
         env = GaugeMetricFamily(
-            self.metric_prefix + 'environment',
+            self.metric_prefix + 'environment_status',
             'Status of Elastic Beanstalk environment',
             labels=['environment_name', 'id', 'application_name',
                     'platform', 'url', 'health', 'version', 'environment_tier']
@@ -77,7 +77,8 @@ class ElasticBeanstalkCollector:
                  environment['ApplicationName'], environment['PlatformArn'],
                  environment['CNAME'], environment['Health'],
                  self.get_label_value(environment, 'VersionLabel'),
-                 environment['Tier']['Name']], 1
+                 environment['Tier']['Name']],
+                1 if environment['Health'] == 'Green' else 0
             )
         yield env
 
