@@ -68,7 +68,7 @@ class ElasticBeanstalkCollector:
         )
         for application in applications:
             app.add_metric(
-                [application['ApplicationName'], application['Description']], 1
+                [application['ApplicationName'], self.get_label_value(application, 'Description')], 1
             )
         yield app
         for environment in environments:
