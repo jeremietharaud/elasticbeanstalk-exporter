@@ -1,4 +1,5 @@
 import boto3
+import botocore
 from prometheus_client.core import GaugeMetricFamily
 import logging
 
@@ -27,7 +28,7 @@ class ElasticBeanstalkCollector:
         self.logger = Logger().logger
 
     def describe_environments(self):
-        environments = self.client.describe_environments()
+        environments = self.client.describe_environments(IncludeDeleted=False)
         return environments['Environments']
 
     def list_environment_tags(self, environment_arn):
@@ -47,8 +48,11 @@ class ElasticBeanstalkCollector:
                 EnvironmentName=environment,
                 AttributeNames=['All']
             )
-        except Exception as err:
-            print(err)
+        except botocore.exceptions.ClientError as e:
+            if e.response.get("Error", {}).get("Code") == "InvalidRequestException":
+                return "None"
+            else:
+                raise e
         return metrics
 
     def collect(self):
@@ -66,9 +70,16 @@ class ElasticBeanstalkCollector:
             labels=['environment_name', 'id', 'application_name',
                     'platform', 'url', 'health', 'version', 'environment_tier']
         )
+        current_requests = GaugeMetricFamily(
+            self.metric_prefix + 'environment_current_requests',
+            'Average number of requests per second over the last 10 seconds.',
+            labels=['environment_name', 'application_name', 'health_status',
+                    'status']
+        )
         for application in applications:
             app.add_metric(
-                [application['ApplicationName'], self.get_label_value(application, 'Description')], 1
+                [application['ApplicationName'],
+                 self.get_label_value(application, 'Description')], 1
             )
         yield app
         for environment in environments:
@@ -80,7 +91,16 @@ class ElasticBeanstalkCollector:
                  environment['Tier']['Name']],
                 1 if environment['Health'] == 'Green' else 0
             )
+            env_health = self.describe_environment_health(
+                environment['EnvironmentName'])
+            if env_health != "None" and 'ApplicationMetrics' in env_health:
+                current_requests.add_metric(
+                    [environment['EnvironmentName'], environment['ApplicationName'],
+                     env_health['HealthStatus'], env_health['Status']],
+                    env_health['ApplicationMetrics']['RequestCount']
+                )
         yield env
+        yield current_requests
 
     @staticmethod
     def get_label_value(obj, label):
