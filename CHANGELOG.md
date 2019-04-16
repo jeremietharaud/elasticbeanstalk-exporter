@@ -2,17 +2,25 @@
 
 FEATURES:
 
-* collector.py: Add `current_requests` metric (Enhanced Health Reporting)
-* collector.py: Add `http_requests` metric per status code (Enhanced Health Reporting)
-* collector.py: Add `load_average` metric per instance (Enhanced Health Reporting)
-* collector.py: Add `cpu_usage` metric per instance (Enhanced Health Reporting)
+* collector.py: Add `enhanced_global_current_requests` overall metric (Enhanced Health Reporting)
+* collector.py: Add `enhanced_global_http_requests_percent` overall metric per status code (Enhanced Health Reporting)
+* collector.py: Add `enhanced_current_requests` metric per instance (Enhanced Health Reporting)
+* collector.py: Add `enhanced_http_requests_percent` metric per instance and status code (Enhanced Health Reporting)
+* collector.py: Add `enhanced_load_average` metric per instance (Enhanced Health Reporting)
+* collector.py: Add `enhanced_cpu_usage_percent` metric per instance (Enhanced Health Reporting)
+* collector.py: Add `enhanced_health_status` metric per health status (Enhanced Health Reporting)
+* collector.py: Add `enhanced_status` metric per status (Enhanced Health Reporting)
 
 IMPROVEMENT:
 
-* collector/py: Ignore terminated environment
+* collector.py: Ignore terminated environment
 * Repository: Add CHANGELOG.md
 
-## 1.2 (April 11, 2019)
+BUG FIXES:
+
+* collector.py: Prevent error `KeyError: 'CNAME'` when url is empty for an environment (for example when the environment is under creation)
+
+## 1.2 (April 12, 2019)
 
 BUG FIXES:
 

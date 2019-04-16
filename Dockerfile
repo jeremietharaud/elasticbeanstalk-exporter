@@ -2,7 +2,7 @@ FROM python:alpine3.8
 
 WORKDIR /elasticbeanstalk-exporter
 
-RUN pip install --no-cache-dir boto3 prometheus_client
+RUN pip install --no-cache-dir boto3 prometheus_client joblib
 
 COPY . .
 
