@@ -106,7 +106,7 @@ class ElasticBeanstalkCollector:
     def collect_global_current_requests(self, environments_health):
         start = time.time()
         current_requests = GaugeMetricFamily(
-            self.metric_prefix + 'environment_enhanced_global_current_requests',
+            self.metric_prefix + 'enhanced_global_current_requests',
             'Average number of requests per second over the last 10 seconds',
             labels=['environment_name']
         )
@@ -122,7 +122,7 @@ class ElasticBeanstalkCollector:
     def collect_current_requests(self, environments_instances_health):
         start = time.time()
         instance_current_requests = GaugeMetricFamily(
-            self.metric_prefix + 'environment_enhanced_current_requests',
+            self.metric_prefix + 'enhanced_current_requests',
             'Average number of requests per instance per second over the last 10 seconds',
             labels=['environment_name', 'instance_id']
         )
@@ -140,7 +140,7 @@ class ElasticBeanstalkCollector:
     def collect_load_average(self, environments_instances_health):
         start = time.time()
         instance_load_average = GaugeMetricFamily(
-            self.metric_prefix + 'environment_enhanced_load_average',
+            self.metric_prefix + 'enhanced_load_average',
             'Load average in the last 1-minute, 5-minute, and 15-minute periods',
             labels=['environment_name', 'instance_id', 'mode']
         )
@@ -169,7 +169,7 @@ class ElasticBeanstalkCollector:
     def collect_cpu_usage(self, environments_instances_health):
         start = time.time()
         instance_cpu_usage = GaugeMetricFamily(
-            self.metric_prefix + 'environment_enhanced_cpu_usage_percent',
+            self.metric_prefix + 'enhanced_cpu_usage_percent',
             'CPU utilization per instance and state',
             labels=['environment_name', 'instance_id', 'state']
         )
@@ -218,7 +218,7 @@ class ElasticBeanstalkCollector:
     def collect_global_http_requests(self, environments_health):
         start = time.time()
         http_requests = GaugeMetricFamily(
-            self.metric_prefix + 'environment_enhanced_global_http_requests_percent',
+            self.metric_prefix + 'enhanced_global_http_requests_percent',
             'Percent of requests that resulted in a status code over the last 10 seconds',
             labels=['environment_name', 'status_code']
         )
@@ -247,7 +247,7 @@ class ElasticBeanstalkCollector:
     def collect_health_status(self, environments_health):
         start = time.time()
         health_status = GaugeMetricFamily(
-            self.metric_prefix + 'environment_enhanced_health_status',
+            self.metric_prefix + 'enhanced_health_status',
             'The health status of the environment',
             labels=['environment_name', 'color', 'health_status']
         )
@@ -292,7 +292,7 @@ class ElasticBeanstalkCollector:
     def collect_status(self, environments_health):
         start = time.time()
         status = GaugeMetricFamily(
-            self.metric_prefix + 'environment_enhanced_status',
+            self.metric_prefix + 'enhanced_status',
             'The status of the environment',
             labels=['environment_name', 'status']
         )

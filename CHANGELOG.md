@@ -10,6 +10,7 @@ FEATURES:
 * collector.py: Add `enhanced_cpu_usage_percent` metric per instance (Enhanced Health Reporting)
 * collector.py: Add `enhanced_health_status` metric per health status (Enhanced Health Reporting)
 * collector.py: Add `enhanced_status` metric per status (Enhanced Health Reporting)
+* collector.py: Add `collector_duration_seconds` metric
 
 IMPROVEMENT:
 
