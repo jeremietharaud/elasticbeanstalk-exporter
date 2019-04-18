@@ -38,7 +38,7 @@ class ElasticBeanstalkCollector:
         applications = self.client.describe_applications()
         return applications['Applications']
 
-    def parallel_describe_environment_health(self, environment):
+    def describe_environment_health(self, environment):
         metrics = None
         try:
             metrics = self.client.describe_environment_health(
@@ -52,7 +52,31 @@ class ElasticBeanstalkCollector:
                 raise e
         return environment, metrics
 
-    def parallel_describe_environment_instances_health(self, environment):
+    def parallel_describe_environment_health(self, environments):
+        start = time.time()
+        r = Parallel(n_jobs=-1, prefer="threads")(
+            delayed(
+                self.describe_environment_health)(
+                    environment['EnvironmentName']
+                    ) for environment in environments
+                )
+        end = time.time()
+        self.metric_collector_duration.add_metric(['parallel_environment_health'], end-start)
+        return r
+    
+    def iterative_describe_environment_health(self, environments):
+        start = time.time()
+        r = []
+        for environment in environments:
+            r.append(self.describe_environment_health(
+                    environment['EnvironmentName']
+                )
+            )
+        end = time.time()
+        self.metric_collector_duration.add_metric(['iterative_environment_health'], end-start)
+        return r
+
+    def describe_environment_instances_health(self, environment):
         metrics = None
         try:
             metrics = self.client.describe_instances_health(
@@ -65,6 +89,30 @@ class ElasticBeanstalkCollector:
             else:
                 raise e
         return environment, metrics['InstanceHealthList']
+
+    def parallel_describe_environment_instances_health(self, environments):
+        start = time.time()
+        r = Parallel(n_jobs=-1, prefer="threads")(
+            delayed(
+                self.describe_environment_instances_health)(
+                    environment['EnvironmentName']
+                    ) for environment in environments
+                )
+        end = time.time()
+        self.metric_collector_duration.add_metric(['parallel_instance_health'], end-start)
+        return r
+
+    def iterative_describe_environment_instances_health(self, environments):
+        start = time.time()
+        r = []
+        for environment in environments:
+            r.append(self.describe_environment_instances_health(
+                    environment['EnvironmentName']
+                )
+            )
+        end = time.time()
+        self.metric_collector_duration.add_metric(['iterative_instance_health'], end-start)
+        return r
 
     def collect_applications(self, applications):
         start = time.time()
@@ -226,19 +274,23 @@ class ElasticBeanstalkCollector:
             if health != "None" and 'ApplicationMetrics' in health:
                 http_requests.add_metric(
                     [environment, 'Status2xx'],
-                    health['ApplicationMetrics']['StatusCodes']['Status2xx'] if 'StatusCodes' in health['ApplicationMetrics'] else 0
+                    health['ApplicationMetrics']['StatusCodes']['Status2xx']
+                    if 'StatusCodes' in health['ApplicationMetrics'] else 0
                 )
                 http_requests.add_metric(
                     [environment, 'Status3xx'],
-                    health['ApplicationMetrics']['StatusCodes']['Status3xx'] if 'StatusCodes' in health['ApplicationMetrics'] else 0
+                    health['ApplicationMetrics']['StatusCodes']['Status3xx']
+                    if 'StatusCodes' in health['ApplicationMetrics'] else 0
                 )
                 http_requests.add_metric(
                     [environment, 'Status4xx'],
-                    health['ApplicationMetrics']['StatusCodes']['Status4xx'] if 'StatusCodes' in health['ApplicationMetrics'] else 0
+                    health['ApplicationMetrics']['StatusCodes']['Status4xx']
+                    if 'StatusCodes' in health['ApplicationMetrics'] else 0
                 )
                 http_requests.add_metric(
                     [environment, 'Status5xx'],
-                    health['ApplicationMetrics']['StatusCodes']['Status5xx'] if 'StatusCodes' in health['ApplicationMetrics'] else 0
+                    health['ApplicationMetrics']['StatusCodes']['Status5xx']
+                    if 'StatusCodes' in health['ApplicationMetrics'] else 0
                 )
         end = time.time()
         self.metric_collector_duration.add_metric(['global_http_requests'], end-start)
@@ -329,8 +381,8 @@ class ElasticBeanstalkCollector:
             'Duration of a collection', labels=['collector'])
         environments = self.describe_environments()
         applications = self.describe_applications()
-        environments_health = Parallel(n_jobs=-1, prefer="threads")(delayed(self.parallel_describe_environment_health)(environment['EnvironmentName']) for environment in environments)
-        environments_instances_health = Parallel(n_jobs=-1, prefer="threads")(delayed(self.parallel_describe_environment_instances_health)(environment['EnvironmentName']) for environment in environments)
+        environments_health = self.parallel_describe_environment_health(environments)
+        environments_instances_health = self.parallel_describe_environment_instances_health(environments)
 
         yield self.collect_environments(environments)
         yield self.collect_applications(applications)
