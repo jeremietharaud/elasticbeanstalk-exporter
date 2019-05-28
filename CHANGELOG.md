@@ -1,4 +1,4 @@
-## 1.3 (Unreleased)
+## 1.3 (May 28, 2019)
 
 FEATURES:
 
