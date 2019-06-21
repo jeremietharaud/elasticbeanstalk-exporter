@@ -41,10 +41,7 @@ class ElasticBeanstalkCollector:
     def describe_environment_health(self, environment):
         metrics = None
         try:
-            metrics = self.client.describe_environment_health(
-                EnvironmentName=environment,
-                AttributeNames=['All']
-            )
+            metrics = self.client.describe_environment_health(EnvironmentName=environment, AttributeNames=['All'])
         except botocore.exceptions.ClientError as e:
             if e.response.get("Error").get("Code") == "InvalidRequestException":
                 return "None", "None"
@@ -55,23 +52,16 @@ class ElasticBeanstalkCollector:
     def parallel_describe_environment_health(self, environments):
         start = time.time()
         r = Parallel(n_jobs=-1, prefer="threads")(
-            delayed(
-                self.describe_environment_health)(
-                    environment['EnvironmentName']
-                    ) for environment in environments
-                )
+            delayed(self.describe_environment_health)(environment['EnvironmentName']) for environment in environments)
         end = time.time()
         self.metric_collector_duration.add_metric(['parallel_environment_health'], end-start)
         return r
-    
+
     def iterative_describe_environment_health(self, environments):
         start = time.time()
         r = []
         for environment in environments:
-            r.append(self.describe_environment_health(
-                    environment['EnvironmentName']
-                )
-            )
+            r.append(self.describe_environment_health(environment['EnvironmentName']))
         end = time.time()
         self.metric_collector_duration.add_metric(['iterative_environment_health'], end-start)
         return r
@@ -106,10 +96,7 @@ class ElasticBeanstalkCollector:
         start = time.time()
         r = []
         for environment in environments:
-            r.append(self.describe_environment_instances_health(
-                    environment['EnvironmentName']
-                )
-            )
+            r.append(self.describe_environment_instances_health(environment['EnvironmentName']))
         end = time.time()
         self.metric_collector_duration.add_metric(['iterative_instance_health'], end-start)
         return r
@@ -122,10 +109,7 @@ class ElasticBeanstalkCollector:
             labels=['application_name', 'description']
         )
         for application in applications:
-            app.add_metric(
-                [application['ApplicationName'],
-                 self.get_label_value(application, 'Description')], 1
-            )
+            app.add_metric([application['ApplicationName'], self.get_label_value(application, 'Description')], 1)
         end = time.time()
         self.metric_collector_duration.add_metric(['applications'], end-start)
         return app
@@ -160,9 +144,7 @@ class ElasticBeanstalkCollector:
         )
         for environment, health in environments_health:
             if health != "None" and 'ApplicationMetrics' in health:
-                current_requests.add_metric(
-                    [environment], health['ApplicationMetrics']['RequestCount']
-                )
+                current_requests.add_metric([environment], health['ApplicationMetrics']['RequestCount'])
         end = time.time()
         self.metric_collector_duration.add_metric(['global_current_requests'], end-start)
         return current_requests
@@ -305,38 +287,14 @@ class ElasticBeanstalkCollector:
         )
         for environment, health in environments_health:
             if health != "None" and 'ApplicationMetrics' in health:
-                health_status.add_metric(
-                    [environment, 'Green', 'Ok'],
-                    1 if health['HealthStatus'] == 'Ok' else 0
-                )
-                health_status.add_metric(
-                    [environment, 'Yellow', 'Warning'],
-                    1 if health['HealthStatus'] == 'Warning' else 0
-                )
-                health_status.add_metric(
-                    [environment, 'Red', 'Degraded'],
-                    1 if health['HealthStatus'] == 'Degraded' else 0
-                )
-                health_status.add_metric(
-                    [environment, 'Red', 'Severe'],
-                    1 if health['HealthStatus'] == 'Severe' else 0
-                )
-                health_status.add_metric(
-                    [environment, 'Green', 'Info'],
-                    1 if health['HealthStatus'] == 'Info' else 0
-                )
-                health_status.add_metric(
-                    [environment, 'Grey', 'Pending'],
-                    1 if health['HealthStatus'] == 'Pending' else 0
-                )
-                health_status.add_metric(
-                    [environment, 'Grey', 'Unknown'],
-                    1 if health['HealthStatus'] == 'Unknown' else 0
-                )
-                health_status.add_metric(
-                    [environment, 'Grey', 'Suspended'],
-                    1 if health['HealthStatus'] == 'Suspended' else 0
-                )
+                health_status.add_metric([environment, 'Green', 'Ok'], 1 if health['HealthStatus'] == 'Ok' else 0)
+                health_status.add_metric([environment, 'Yellow', 'Warning'], 1 if health['HealthStatus'] == 'Warning' else 0)
+                health_status.add_metric([environment, 'Red', 'Degraded'], 1 if health['HealthStatus'] == 'Degraded' else 0)
+                health_status.add_metric([environment, 'Red', 'Severe'], 1 if health['HealthStatus'] == 'Severe' else 0)
+                health_status.add_metric([environment, 'Green', 'Info'], 1 if health['HealthStatus'] == 'Info' else 0)
+                health_status.add_metric([environment, 'Grey', 'Pending'], 1 if health['HealthStatus'] == 'Pending' else 0)
+                health_status.add_metric([environment, 'Grey', 'Unknown'], 1 if health['HealthStatus'] == 'Unknown' else 0)
+                health_status.add_metric([environment, 'Grey', 'Suspended'], 1 if health['HealthStatus'] == 'Suspended' else 0)
         end = time.time()
         self.metric_collector_duration.add_metric(['health_status'], end-start)
         return health_status
@@ -350,26 +308,11 @@ class ElasticBeanstalkCollector:
         )
         for environment, health in environments_health:
             if health != "None" and 'ApplicationMetrics' in health:
-                status.add_metric(
-                    [environment, 'Ready'],
-                    1 if health['Status'] == 'Ready' else 0
-                )
-                status.add_metric(
-                    [environment, 'Launching'],
-                    1 if health['Status'] == 'Launching' else 0
-                )
-                status.add_metric(
-                    [environment, 'Updating'],
-                    1 if health['Status'] == 'Updating' else 0
-                )
-                status.add_metric(
-                    [environment, 'Terminating'],
-                    1 if health['Status'] == 'Terminating' else 0
-                )
-                status.add_metric(
-                    [environment, 'Terminated'],
-                    1 if health['Status'] == 'Terminated' else 0
-                )
+                status.add_metric([environment, 'Ready'], 1 if health['Status'] == 'Ready' else 0)
+                status.add_metric([environment, 'Launching'], 1 if health['Status'] == 'Launching' else 0)
+                status.add_metric([environment, 'Updating'], 1 if health['Status'] == 'Updating' else 0)
+                status.add_metric([environment, 'Terminating'], 1 if health['Status'] == 'Terminating' else 0)
+                status.add_metric([environment, 'Terminated'], 1 if health['Status'] == 'Terminated' else 0)
         end = time.time()
         self.metric_collector_duration.add_metric(['status'], end-start)
         return status
