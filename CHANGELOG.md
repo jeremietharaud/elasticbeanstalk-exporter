@@ -1,3 +1,9 @@
+## 1.4 (January 8, 2019)
+
+ENHANCEMENTS:
+
+* flake8 on python files
+
 ## 1.3 (May 28, 2019)
 
 FEATURES:
@@ -12,7 +18,7 @@ FEATURES:
 * collector.py: Add `enhanced_status` metric per status (Enhanced Health Reporting)
 * collector.py: Add `collector_duration_seconds` metric
 
-IMPROVEMENT:
+ENHANCEMENTS:
 
 * collector.py: Ignore terminated environment
 * Repository: Add CHANGELOG.md
@@ -29,7 +35,7 @@ BUG FIXES:
 
 ## 1.1 (March 22, 2019)
 
-IMPROVEMENT:
+ENHANCEMENTS:
 
 * collector.py: Add environment status metric based on `health` label and update suffix into `environment_status`
 * collector.py: Update description of application metric
