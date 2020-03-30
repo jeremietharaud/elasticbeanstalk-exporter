@@ -61,9 +61,3 @@ When running on an ec2 machine using IAM role:
 ```
 $ docker run -e AWS_DEFAULT_REGION=<region> -d -p 9552:9552 jeremietharaud/elasticbeanstalk-exporter
 ```
-
-When running it externally:
-
-```
-$ docker run -d -p 9552:9552 -e AWS_ACCESS_KEY_ID=<access_key> -e AWS_SECRET_ACCESS_KEY=<secret_key> -e AWS_DEFAULT_REGION=<region> jeremietharaud/elasticbeanstalk-exporter
-```
