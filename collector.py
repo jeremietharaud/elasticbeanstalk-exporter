@@ -181,16 +181,19 @@ class ElasticBeanstalkCollector:
                         [environment,
                          instance_health['InstanceId'], 'Load1'],
                         instance_health['System']['LoadAverage'][0]
+                        if 'LoadAverage' in instance_health['System'] else 0
                     )
                     instance_load_average.add_metric(
                         [environment,
                          instance_health['InstanceId'], 'Load5'],
                         instance_health['System']['LoadAverage'][1]
+                        if 'LoadAverage' in instance_health['System'] else 0
                     )
                     instance_load_average.add_metric(
                         [environment,
                          instance_health['InstanceId'], 'Load15'],
                         instance_health['System']['LoadAverage'][2]
+                        if 'LoadAverage' in instance_health['System'] else 0
                     )
         end = time.time()
         self.metric_collector_duration.add_metric(['load_average'], end-start)
@@ -210,36 +213,43 @@ class ElasticBeanstalkCollector:
                         [environment,
                          instance_health['InstanceId'], 'User'],
                         instance_health['System']['CPUUtilization']['User']
+                        if 'CPUUtilization' in instance_health['System'] else 0
                     )
                     instance_cpu_usage.add_metric(
                         [environment,
                          instance_health['InstanceId'], 'Nice'],
                         instance_health['System']['CPUUtilization']['Nice']
+                        if 'CPUUtilization' in instance_health['System'] else 0
                     )
                     instance_cpu_usage.add_metric(
                         [environment,
                          instance_health['InstanceId'], 'System'],
                         instance_health['System']['CPUUtilization']['System']
+                        if 'CPUUtilization' in instance_health['System'] else 0
                     )
                     instance_cpu_usage.add_metric(
                         [environment,
                          instance_health['InstanceId'], 'Idle'],
                         instance_health['System']['CPUUtilization']['Idle']
+                        if 'CPUUtilization' in instance_health['System'] else 0
                     )
                     instance_cpu_usage.add_metric(
                         [environment,
                          instance_health['InstanceId'], 'IOWait'],
                         instance_health['System']['CPUUtilization']['IOWait']
+                        if 'CPUUtilization' in instance_health['System'] else 0
                     )
                     instance_cpu_usage.add_metric(
                         [environment,
                          instance_health['InstanceId'], 'IRQ'],
                         instance_health['System']['CPUUtilization']['IRQ']
+                        if 'CPUUtilization' in instance_health['System'] else 0
                     )
                     instance_cpu_usage.add_metric(
                         [environment,
                          instance_health['InstanceId'], 'SoftIRQ'],
                         instance_health['System']['CPUUtilization']['SoftIRQ']
+                        if 'CPUUtilization' in instance_health['System'] else 0
                     )
         end = time.time()
         self.metric_collector_duration.add_metric(['cpu_usage'], end-start)
