@@ -1,4 +1,4 @@
-## 1.5 (June 16, 2020)
+## 1.4.1 (June 16, 2020)
 BUG FIXES:
 
 * collector.py: Prevent error `KeyError: 'LoadAverage'` when LoadAverage is empty for an application (for example when the environment is under creation)
