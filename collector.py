@@ -66,26 +66,37 @@ class ElasticBeanstalkCollector:
         self.metric_collector_duration.add_metric(['iterative_environment_health'], end-start)
         return r
 
-    def describe_environment_instances_health(self, environment):
+    def describe_environment_instances_health(self, environment, token):
         metrics = None
         try:
-            metrics = self.client.describe_instances_health(
-                EnvironmentName=environment,
-                AttributeNames=['HealthStatus', 'ApplicationMetrics', 'System']
-            )
+            if token is None:
+                metrics = self.client.describe_instances_health(
+                    EnvironmentName=environment,
+                    AttributeNames=['HealthStatus', 'ApplicationMetrics', 'System']
+                )
+            else:
+                metrics = self.client.describe_instances_health(
+                    EnvironmentName=environment,
+                    AttributeNames=['HealthStatus', 'ApplicationMetrics', 'System'],
+                    NextToken=token
+                )
         except botocore.exceptions.ClientError as e:
             if e.response.get("Error").get("Code") == "InvalidRequestException":
                 return "None", "None"
             else:
                 raise e
-        return environment, metrics['InstanceHealthList']
+        healthList = metrics['InstanceHealthList']
+        if 'NextToken' in metrics:
+            e, more = self.describe_environment_instances_health(environment, metrics['NextToken'])
+            healthList.extend(more)
+        return environment, healthList
 
     def parallel_describe_environment_instances_health(self, environments):
         start = time.time()
         r = Parallel(n_jobs=-1, prefer="threads")(
             delayed(
                 self.describe_environment_instances_health)(
-                    environment['EnvironmentName']
+                    environment['EnvironmentName'], None
                     ) for environment in environments
                 )
         end = time.time()
@@ -96,7 +107,7 @@ class ElasticBeanstalkCollector:
         start = time.time()
         r = []
         for environment in environments:
-            r.append(self.describe_environment_instances_health(environment['EnvironmentName']))
+            r.append(self.describe_environment_instances_health(environment['EnvironmentName'], None))
         end = time.time()
         self.metric_collector_duration.add_metric(['iterative_instance_health'], end-start)
         return r
