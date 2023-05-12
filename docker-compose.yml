@@ -1,0 +1,12 @@
+version: '3.8'
+services:
+  elasticbeanstalk_exporter:
+    image: 868884350453.dkr.ecr.us-east-1.amazonaws.com/team-devops/elasticbeanstalk-exporter:${TAG}
+    container_name: elasticbeanstalk_exporter
+    restart: unless-stopped
+    volumes:
+    - ~/.aws/credentials:/root/.aws/credentials:ro
+    ports:
+      - "9108:9108"
+    env_file:
+      - variables.env

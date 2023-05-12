@@ -1,0 +1,12 @@
+version: '3.8'
+x-elasticbeanstalk_exporter:
+    &default_elasticbeanstalk_exporter
+    image: 868884350453.dkr.ecr.us-east-1.amazonaws.com/team-devops/elasticbeanstalk-exporter:latest
+    build: .
+
+services:
+  elasticbeanstalk_exporter_latest:
+    *default_elasticbeanstalk_exporter
+  elasticbeanstalk_exporter_version:
+    << : *default_elasticbeanstalk_exporter
+    image: 868884350453.dkr.ecr.us-east-1.amazonaws.com/team-devops/elasticbeanstalk-exporter:${TAG}
